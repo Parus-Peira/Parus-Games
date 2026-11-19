@@ -1,0 +1,2462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дневник юнги: Тайна 3 ноября 1890 года</title>
+    <!-- Подключаем рукописные шрифты Caveat, Bad Script, Marck Script и надёжный исторический PT Serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@500;600;700&family=Marck+Script&family=Nunito:wght@500;600;700;800&family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        /* Базовые цветовые переменные (высокий контраст, морская и архивная эстетика) */
+        :root {
+            --navy: #1B365D;
+            --navy-dark: #11233E;
+            --navy-light: #2C5282;
+            --gold: #F4B400;
+            --gold-hover: #E0A300;
+            --gold-light: #FFF3CD;
+            --parchment: #FDF6E3;
+            --parchment-line: #CBD8E6;
+            --margin-red: #D96B6B;
+            --ink: #2B1E16;
+            --ui-text: #1A202C;
+            --ui-muted: #4A5568;
+            --success: #2E7D32;
+            --success-bg: #E8F5E9;
+            --success-border: #66BB6A;
+            --error: #C62828;
+            --error-bg: #FFEBEE;
+            --white: #FFFFFF;
+            --shadow-sm: 0 2px 8px rgba(27, 54, 93, 0.12);
+            --shadow-md: 0 10px 28px rgba(27, 54, 93, 0.18);
+            --shadow-lg: 0 16px 42px rgba(17, 35, 62, 0.3);
+            --radius-md: 12px;
+            --radius-lg: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--navy);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(73, 104, 149, 0.55), transparent 64%),
+                linear-gradient(155deg, rgba(255, 255, 255, 0.025), transparent 48%, rgba(4, 17, 34, 0.2));
+            color: var(--ui-text);
+            line-height: 1.55;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+        }
+
+        /* Главный контейнер приложения */
+        .app-container {
+            width: 100%;
+            max-width: 920px;
+            background: #f8f2e4;
+            border-radius: 8px;
+            box-shadow: 0 18px 48px rgba(67, 49, 26, 0.2), 0 2px 8px rgba(27, 54, 93, 0.12);
+            overflow: hidden;
+            border: 1px solid #bca77e;
+            position: relative;
+        }
+
+        /* Верхняя панель: 12 золотых звёзд + кнопка ключа */
+        .top-bar {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 16px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .stars-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stars-label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #CBD5E0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stage-pill {
+            background: rgba(244, 180, 0, 0.2);
+            color: var(--gold);
+            border: 1px solid rgba(244, 180, 0, 0.5);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+        }
+
+        .stars-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .star-divider {
+            width: 2px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            margin: 0 4px;
+            border-radius: 2px;
+        }
+
+        .star-icon {
+            width: 25px;
+            height: 25px;
+            fill: rgba(255, 255, 255, 0.18);
+            stroke: rgba(255, 255, 255, 0.45);
+            stroke-width: 1.5;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.3s ease;
+        }
+
+        .star-icon.active {
+            fill: var(--gold);
+            stroke: #FFF8DC;
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 6px rgba(244, 180, 0, 0.75));
+        }
+
+        @keyframes starPop {
+            0% { transform: scale(0.7); }
+            50% { transform: scale(1.45) rotate(14deg); }
+            100% { transform: scale(1.15) rotate(0deg); }
+        }
+
+        .star-icon.pop-anim {
+            animation: starPop 0.55s ease forwards;
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.98rem;
+            padding: 11px 18px;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn:focus-visible,
+        .cipher-word:focus-visible,
+        .comp-opt-btn:focus-visible,
+        .option-btn:focus-visible,
+        .drill-choice-btn:focus-visible,
+        .key-study-card:focus-visible,
+        .close-btn:focus-visible {
+            outline: 3px solid #B78600;
+            outline-offset: 3px;
+        }
+
+        .btn-gold {
+            background-color: var(--gold);
+            color: var(--navy-dark);
+            box-shadow: 0 3px 0 #B78600;
+        }
+
+        .btn-gold:hover {
+            background-color: var(--gold-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-navy {
+            background-color: var(--navy);
+            color: var(--white);
+            box-shadow: 0 3px 0 var(--navy-dark);
+        }
+
+        .btn-navy:hover {
+            background-color: var(--navy-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background-color: var(--white);
+            color: var(--navy);
+            border: 2px solid var(--navy);
+            padding: 8px 14px;
+            font-size: 0.9rem;
+        }
+
+        .btn-outline:hover {
+            background-color: #EDF2F7;
+        }
+
+        /* Основная область */
+        .main-content {
+            padding: 24px;
+        }
+
+        /* Панель инструментов над дневником */
+        .toolbar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background-color: #F0F4F8;
+            border-left: 5px solid var(--navy);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-info {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--ui-text);
+            flex: 1 1 280px;
+        }
+
+        .toolbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .counter-badge {
+            background: var(--navy);
+            color: var(--gold);
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+
+        /* Лист старинной тетради (Дневник юнги) */
+        .notebook-sheet {
+            background-color: #f5ebd2;
+            /* Горизонтальные тетрадные линейки + красное вертикальное поле */
+            background-image:
+                radial-gradient(ellipse at 82% 12%, rgba(255, 252, 238, 0.75), transparent 38%),
+                linear-gradient(90deg, transparent 54px, rgba(166, 75, 58, 0.42) 54px, rgba(166, 75, 58, 0.42) 56px, transparent 56px),
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px,
+                    transparent 39px,
+                    rgba(104, 132, 151, 0.28) 39px,
+                    rgba(104, 132, 151, 0.28) 40px
+                ),
+                repeating-linear-gradient(117deg, rgba(116, 87, 47, 0.018) 0 1px, transparent 1px 5px);
+            border: 1px solid #c8b58c;
+            border-radius: 4px;
+            padding: 24px 28px 32px 74px;
+            box-shadow:
+                inset 0 0 42px rgba(152, 114, 55, 0.15),
+                0 9px 22px rgba(66, 47, 25, 0.16);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .notebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(139, 115, 85, 0.45);
+        }
+
+        .diary-date {
+            font-family: 'Marck Script', 'Caveat', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .diary-meta {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 800;
+            color: #6B5335;
+            background: rgba(235, 220, 188, 0.75);
+            padding: 4px 12px;
+            border-radius: 2px;
+            border: 1px solid #D5C29E;
+        }
+
+        .diary-illustration {
+            margin: 4px 0 22px;
+            padding: 8px;
+            background: rgba(229, 214, 181, 0.72);
+            border: 1px solid #c5ad7f;
+            box-shadow: 2px 3px 0 rgba(112, 82, 42, 0.12);
+            transform: rotate(-0.35deg);
+        }
+
+        .diary-illustration svg {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid rgba(95, 70, 39, 0.38);
+        }
+
+        .diary-illustration figcaption {
+            padding: 6px 4px 0;
+            color: #705535;
+            font: 600 0.9rem 'Marck Script', 'Caveat', cursive;
+            text-align: right;
+        }
+
+        /* Текст дневника: по умолчанию каллиграфический Caveat */
+        .diary-body {
+            font-family: 'Caveat', 'Bad Script', cursive;
+            font-size: 1.72rem;
+            font-weight: 600;
+            line-height: 40px; /* Строго попадает в шаг тетрадных линеек 40px */
+            color: var(--ink);
+            letter-spacing: 0.01em;
+            transition: font-family 0.2s ease, font-size 0.2s ease;
+        }
+
+        /* Режим печатного шрифта по переключателю */
+        .notebook-sheet.print-mode .diary-date {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.35rem;
+        }
+
+        .notebook-sheet.print-mode .diary-body {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 40px;
+            letter-spacing: 0;
+        }
+
+        .diary-body p {
+            margin-bottom: 20px;
+            text-indent: 1.2em;
+        }
+
+        .diary-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Интерактивные слова в дневнике */
+        .cipher-word {
+            display: inline-block;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: 700;
+            line-height: 1.15;
+            background-color: var(--gold-light);
+            color: var(--navy-dark);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 0 9px;
+            margin: 0 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(244, 180, 0, 0.3);
+            vertical-align: baseline;
+        }
+
+        .cipher-word:hover {
+            background-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(244, 180, 0, 0.45);
+        }
+
+        .cipher-word.solved {
+            background-color: var(--success-bg);
+            color: var(--success);
+            border-color: var(--success-border);
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .cipher-word.solved::after {
+            content: " ✓";
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.72em;
+            font-weight: 800;
+        }
+
+        /* Плашка перехода ко 2-му этапу (появляется после расшифровки 8 слов) */
+        .stage1-complete-banner {
+            margin-top: 24px;
+            background: linear-gradient(135deg, #1B365D 0%, #274C82 100%);
+            color: var(--white);
+            border: 3px solid var(--gold);
+            border-radius: var(--radius-md);
+            padding: 22px 26px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.45s ease forwards;
+        }
+
+        .stage1-complete-banner.visible {
+            display: flex;
+        }
+
+        .stage1-complete-text h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 4px;
+        }
+
+        .stage1-complete-text p {
+            font-size: 0.98rem;
+            color: #E2E8F0;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================================
+           ШАГ 1: ВВОДНОЕ ИЗУЧЕНИЕ КЛЮЧА ШИФРОВАЛЬЩИКА (4 БУКВЫ)
+           ========================================================= */
+        .step1-intro-box {
+            background: #F0F4F8;
+            border-left: 5px solid var(--navy);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .step1-intro-box h2 {
+            font-size: 1.28rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+
+        .step1-intro-box p {
+            font-size: 0.98rem;
+            color: var(--ui-text);
+        }
+
+        .key-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .key-study-card {
+            background: var(--parchment);
+            border: 2px solid #DFD0B2;
+            border-radius: var(--radius-md);
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .key-study-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .key-study-card.studied {
+            border-color: var(--success-border);
+            background: linear-gradient(180deg, #FDF6E3 0%, #EFF9F0 100%);
+        }
+
+        .key-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .key-card-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .key-card-status {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--gold-light);
+            color: var(--navy-dark);
+            border: 1px solid var(--gold);
+            white-space: nowrap;
+        }
+
+        .key-study-card.studied .key-card-status {
+            background: var(--success-bg);
+            color: var(--success);
+            border-color: var(--success-border);
+        }
+
+        .glyph-compare-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .glyph-box {
+            background: var(--white);
+            border: 1.5px solid #CBD5E0;
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .glyph-box-label {
+            font-size: 0.74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--ui-muted);
+            margin-bottom: 4px;
+        }
+
+        .glyph-print {
+            font-family: 'PT Serif', 'Georgia', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .glyph-handwritten {
+            font-family: 'Caveat', 'Bad Script', cursive;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+
+        .key-card-sound {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: var(--ui-text);
+            margin-bottom: 8px;
+        }
+
+        .key-card-example {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--success);
+            background: var(--white);
+            padding: 6px 10px;
+            border-radius: 8px;
+            border: 1px solid #C6F6D5;
+        }
+
+        .step1-footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            background: var(--white);
+            border: 2px solid #CBD5E0;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+        }
+
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* =========================================================
+           ЭТАП 3: ПРОВЕРКА ПОНИМАНИЯ ПРОЧИТАННОГО (4 ВОПРОСА)
+           ========================================================= */
+        .stage2-section {
+            display: none;
+            animation: slideUp 0.45s ease forwards;
+        }
+
+        .stage2-section.active {
+            display: block;
+        }
+
+        .stage2-header-card {
+            background: var(--navy);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border-bottom: 4px solid var(--gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .stage2-header-card h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 4px;
+        }
+
+        .stage2-header-card p {
+            font-size: 0.96rem;
+            color: #E2E8F0;
+        }
+
+        /* Сворачиваемый блок для перечитывания расшифрованного дневника */
+        .reread-drawer {
+            display: none;
+            margin-bottom: 22px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .reread-drawer.open {
+            display: block;
+        }
+
+        .comprehension-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .comp-card {
+            background: var(--white);
+            border: 2px solid #CBD5E0;
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.25s ease;
+        }
+
+        .comp-card.solved {
+            border-color: var(--success-border);
+            background-color: #FAFFFA;
+        }
+
+        .comp-q-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .comp-q-num {
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+            background: #E2E8F0;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        .comp-card.solved .comp-q-num {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .comp-q-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--ui-text);
+            margin-bottom: 14px;
+        }
+
+        .comp-options {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .comp-opt-btn {
+            text-align: left;
+            background: #F7FAFC;
+            border: 2px solid #CBD5E0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .comp-opt-btn:hover:not(:disabled) {
+            border-color: var(--navy);
+            background: #EDF2F7;
+        }
+
+        .comp-opt-btn.wrong {
+            border-color: var(--error);
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .comp-opt-btn.correct {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .comp-feedback {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.94rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .comp-feedback.error {
+            display: block;
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .comp-feedback.success {
+            display: block;
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 35, 62, 0.78);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            padding: 26px;
+            box-shadow: var(--shadow-lg);
+            border: 3px solid var(--navy);
+            position: relative;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #EDF2F7;
+            padding-bottom: 12px;
+        }
+
+        .modal-title {
+            font-size: 1.32rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .close-btn {
+            background: #EDF2F7;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--navy);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .close-btn:hover {
+            background: #CBD5E0;
+        }
+
+        .intro-badge {
+            display: inline-block;
+            background: var(--gold-light);
+            color: var(--navy-dark);
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .intro-text {
+            font-size: 1.04rem;
+            color: var(--ui-text);
+            margin-bottom: 20px;
+            line-height: 1.65;
+        }
+
+        /* Карточки Ключа шифровальщика */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .rule-card {
+            background: var(--parchment);
+            border: 2px solid #DFD0B2;
+            border-radius: var(--radius-md);
+            padding: 14px;
+        }
+
+        .rule-letter {
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .rule-letter span {
+            font-size: 0.88rem;
+            font-weight: 800;
+            background: var(--gold);
+            color: var(--navy-dark);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .rule-desc {
+            font-size: 0.92rem;
+            color: var(--ui-text);
+            margin-bottom: 8px;
+        }
+
+        .rule-example {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--success);
+            background: var(--white);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #C6F6D5;
+        }
+
+        /* Окно вопроса Этапа 1 */
+        .word-showcase {
+            text-align: center;
+            background: var(--parchment);
+            border: 2px solid var(--gold);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .word-showcase-label {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--ui-muted);
+            margin-bottom: 2px;
+        }
+
+        .word-showcase-value {
+            font-family: 'Caveat', cursive;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.15;
+        }
+
+        .question-text {
+            font-size: 1.06rem;
+            font-weight: 800;
+            color: var(--ui-text);
+            margin-bottom: 14px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            text-align: left;
+            background: #F7FAFC;
+            border: 2px solid #CBD5E0;
+            border-radius: var(--radius-md);
+            padding: 13px 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: all 0.18s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--navy);
+            background: #EDF2F7;
+        }
+
+        .option-btn.wrong-choice {
+            border-color: var(--error);
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .option-btn.correct-choice {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .quiz-feedback {
+            margin-top: 14px;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 0.94rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .quiz-feedback.error {
+            display: block;
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .quiz-feedback.success {
+            display: block;
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* Окно тренажёра буквы в Шаге 1 */
+        .letter-sample-box {
+            background: var(--parchment);
+            border: 2px solid #DFD0B2;
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .letter-sample-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .sample-examples-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 10px;
+        }
+
+        .sample-pill {
+            background: var(--white);
+            border: 1.5px solid #CBD5E0;
+            border-radius: 10px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .sample-pill-type {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+        }
+
+        .sample-pill-pair {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--navy);
+        }
+
+        .sample-pill-pair .handwritten-word {
+            font-family: 'Caveat', 'Bad Script', cursive;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .sample-pill-pair .modern-target {
+            color: var(--success);
+        }
+
+        .drill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .drill-item {
+            background: #F7FAFC;
+            border: 2px solid #CBD5E0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .drill-item.solved {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+        }
+
+        .drill-word-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 170px;
+        }
+
+        .drill-style-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #E2E8F0;
+            color: var(--navy);
+        }
+
+        .drill-word-print {
+            font-family: 'PT Serif', 'Georgia', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .drill-word-hand {
+            font-family: 'Caveat', 'Bad Script', cursive;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+
+        .drill-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .drill-choice-btn {
+            background: var(--white);
+            border: 2px solid #CBD5E0;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .drill-choice-btn:hover:not(:disabled) {
+            border-color: var(--navy);
+            background: #EDF2F7;
+        }
+
+        .drill-choice-btn.wrong {
+            border-color: var(--error);
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .drill-choice-btn.correct {
+            border-color: var(--success-border);
+            background: var(--success-bg);
+            color: var(--success);
+            font-weight: 800;
+        }
+
+        /* Диплом Победы */
+        .diploma-box {
+            text-align: center;
+            border: 4px double var(--gold);
+            background: linear-gradient(180deg, #FFFFFF 0%, #FDF9EE 100%);
+        }
+
+        .diploma-ribbon {
+            display: inline-block;
+            background: var(--navy);
+            color: var(--gold);
+            font-weight: 800;
+            font-size: 0.88rem;
+            padding: 5px 16px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .diploma-rank {
+            font-family: 'Marck Script', cursive;
+            font-size: 2.1rem;
+            color: var(--navy);
+            margin: 4px 0 8px;
+        }
+
+        .victory-stars {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 10px 0 14px;
+            flex-wrap: wrap;
+        }
+
+        .victory-stars svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--gold);
+            stroke: var(--navy);
+            stroke-width: 1.2;
+        }
+
+        .history-fact {
+            background: var(--parchment);
+            border: 2px solid #DFD0B2;
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            text-align: left;
+            margin: 16px 0 20px;
+            font-size: 0.96rem;
+            line-height: 1.6;
+        }
+
+        .history-fact-title {
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 6px;
+            font-size: 1.02rem;
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        /* Адаптивность для телефонов и планшетов */
+        @media (max-width: 680px) {
+            body {
+                padding: 8px;
+            }
+            .top-bar {
+                padding: 12px 14px;
+            }
+            .star-icon {
+                width: 20px;
+                height: 20px;
+            }
+            .main-content {
+                padding: 14px;
+            }
+            .notebook-sheet {
+                padding: 18px 14px 24px 24px;
+                background-image:
+                    radial-gradient(ellipse at 82% 12%, rgba(255, 252, 238, 0.75), transparent 38%),
+                    linear-gradient(90deg, transparent 14px, rgba(166, 75, 58, 0.38) 14px, rgba(166, 75, 58, 0.38) 16px, transparent 16px),
+                    repeating-linear-gradient(
+                        to bottom,
+                        transparent 0px,
+                        transparent 35px,
+                        rgba(104, 132, 151, 0.28) 35px,
+                        rgba(104, 132, 151, 0.28) 36px
+                    ),
+                    repeating-linear-gradient(117deg, rgba(116, 87, 47, 0.018) 0 1px, transparent 1px 5px);
+            }
+            .diary-body {
+                font-size: 1.48rem;
+                line-height: 36px;
+            }
+            .notebook-sheet.print-mode .diary-body {
+                font-size: 1.04rem;
+                line-height: 36px;
+            }
+            .modal-box {
+                padding: 18px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="app-container">
+        <!-- Верхняя панель со шкалой из 12 золотых звёзд -->
+        <header class="top-bar">
+            <div class="stars-wrapper">
+                <div class="stars-label">
+                    <span>Звёзды знатока: <strong id="starCountText" style="color: var(--gold);">0 из 12</strong></span>
+                    <span class="stage-pill" id="stageBadge">Шаг 1: Изучение ключа</span>
+                </div>
+                <div class="stars-row" id="starsContainer" aria-label="Прогресс: 12 звёзд">
+                    <!-- 8 звёзд Шага 2 + разделитель + 4 звезды Шага 3 -->
+                </div>
+            </div>
+            <button type="button" class="btn btn-gold" id="openKeyBtn">
+                🔑 Ключ шифровальщика
+            </button>
+        </header>
+
+        <main class="main-content">
+            <!-- =====================================================
+                 ШАГ 1: ИЗУЧЕНИЕ СТАРИННЫХ БУКВ (ОБЯЗАТЕЛЬНЫЙ ВВОДНЫЙ ЭТАП)
+                 ===================================================== -->
+            <section id="step1KeySection">
+                <div class="step1-intro-box">
+                    <h2>Шаг 1. Изучи старинные буквы перед расшифровкой</h2>
+                    <p>Чтобы прочитать запись юнги с фрегата «Память Азова», познакомься с четырьмя буквами, которые использовались до 1918 года. <strong>Нажми на каждую карточку</strong>, чтобы изучить её печатный и письменный вид.</p>
+                </div>
+
+                <div class="key-cards-grid" id="keyStudyGrid">
+                    <div class="key-study-card" data-letter-id="0" role="button" tabindex="0">
+                        <div>
+                            <div class="key-card-top">
+                                <div class="key-card-name">1. Ять</div>
+                                <span class="key-card-status">Тренироваться →</span>
+                            </div>
+                            <div class="glyph-compare-row">
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Печатная</div>
+                                    <div class="glyph-print">Ѣ ѣ</div>
+                                </div>
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Письменная</div>
+                                    <div class="glyph-handwritten">Ѣ ѣ</div>
+                                </div>
+                            </div>
+                            <div class="key-card-sound">Как читалась: как звук <strong>[Е]</strong>.</div>
+                        </div>
+                        <div class="key-card-example">слѣдуетъ → следует, встрѣчѣ → встрече</div>
+                    </div>
+
+                    <div class="key-study-card" data-letter-id="1" role="button" tabindex="0">
+                        <div>
+                            <div class="key-card-top">
+                                <div class="key-card-name">2. Фита</div>
+                                <span class="key-card-status">Тренироваться →</span>
+                            </div>
+                            <div class="glyph-compare-row">
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Печатная</div>
+                                    <div class="glyph-print">Ѳ ѳ</div>
+                                </div>
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Письменная</div>
+                                    <div class="glyph-handwritten">Ѳ ѳ</div>
+                                </div>
+                            </div>
+                            <div class="key-card-sound">Как читалась: как звук <strong>[Ф]</strong> (в словах греческого происхождения).</div>
+                        </div>
+                        <div class="key-card-example">Ѳедоромъ → Федором, Аѳины → Афины</div>
+                    </div>
+
+                    <div class="key-study-card" data-letter-id="2" role="button" tabindex="0">
+                        <div>
+                            <div class="key-card-top">
+                                <div class="key-card-name">3. И десятеричное</div>
+                                <span class="key-card-status">Тренироваться →</span>
+                            </div>
+                            <div class="glyph-compare-row">
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Печатная</div>
+                                    <div class="glyph-print">І і</div>
+                                </div>
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Письменная</div>
+                                    <div class="glyph-handwritten">І і</div>
+                                </div>
+                            </div>
+                            <div class="key-card-sound">Как читалась: как звук <strong>[И]</strong> («И с точкой» перед гласными и в слове «міръ»).</div>
+                        </div>
+                        <div class="key-card-example">исторій → историй, русскіе → русские</div>
+                    </div>
+
+                    <div class="key-study-card" data-letter-id="3" role="button" tabindex="0">
+                        <div>
+                            <div class="key-card-top">
+                                <div class="key-card-name">4. Ер (твёрдый знак)</div>
+                                <span class="key-card-status">Тренироваться →</span>
+                            </div>
+                            <div class="glyph-compare-row">
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Печатная</div>
+                                    <div class="glyph-print">Ъ ъ</div>
+                                </div>
+                                <div class="glyph-box">
+                                    <div class="glyph-box-label">Письменная</div>
+                                    <div class="glyph-handwritten">Ъ ъ</div>
+                                </div>
+                            </div>
+                            <div class="key-card-sound">Как читалась: <strong>не читалась</strong> (ставилась на конце слов после твёрдых согласных).</div>
+                        </div>
+                        <div class="key-card-example">фрегатъ → фрегат, портъ → порт</div>
+                    </div>
+                </div>
+
+                <div class="step1-footer-bar">
+                    <div style="font-weight: 700; color: var(--navy);" id="studiedLettersText">
+                        Изучено карточек: 0 из 4
+                    </div>
+                    <button type="button" class="btn btn-gold" id="goToDiaryStepBtn" disabled>
+                        📖 Я изучил ключ — перейти к дневнику! →
+                    </button>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 ШАГ 2: РАСШИФРОВКА ПОЧЕРКА И СТАРЫХ БУКВ (8 ЗВЁЗД)
+                 ===================================================== -->
+            <section id="stage1Section" style="display: none;">
+                <div class="toolbar-row">
+                    <div class="toolbar-info">
+                        <strong>Шаг 2.</strong> Нажимай на <strong>выделенные рукописные слова</strong> в тетради юнги, чтобы перевести их на современный русский язык.
+                    </div>
+                    <div class="toolbar-controls">
+                        <button type="button" class="btn btn-outline" id="toggleFontBtn" title="Переключить стиль шрифта дневника">
+                            🔤 Обычный шрифт
+                        </button>
+                        <span class="counter-badge" id="wordsCounter">Слова: 0 / 8</span>
+                    </div>
+                </div>
+
+                <!-- Тетрадный лист дневника от 3 ноября 1890 года (цельный рукописный стиль) -->
+                <article class="notebook-sheet" id="mainNotebook">
+                    <div class="notebook-header">
+                        <div class="diary-date">3 ноября 1890 года.</div>
+                        <div class="diary-meta">Пирей • первое знакомство с берегом</div>
+                    </div>
+
+                    <figure class="diary-illustration">
+                        <svg viewBox="0 0 760 220" role="img" aria-labelledby="harborTitle harborDesc">
+                            <title id="harborTitle">Набросок Пирейского рейда в дневнике юнги</title>
+                            <desc id="harborDesc">Фрегат стоит на тихой воде у греческого берега; на переднем плане юнга записывает впечатления.</desc>
+                            <defs>
+                                <linearGradient id="harborSky" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="#ead9ad"/>
+                                    <stop offset="1" stop-color="#f6edda"/>
+                                </linearGradient>
+                                <pattern id="engravingHatch" width="7" height="7" patternTransform="rotate(32)" patternUnits="userSpaceOnUse">
+                                    <path d="M0 0v7" stroke="#526678" stroke-opacity=".16" stroke-width="1"/>
+                                </pattern>
+                            </defs>
+                            <rect width="760" height="220" fill="url(#harborSky)"/>
+                            <rect width="760" height="220" fill="url(#engravingHatch)"/>
+                            <circle cx="602" cy="58" r="29" fill="#d8b979" opacity=".58"/>
+                            <path d="M0 137 Q92 119 172 136 T338 132 T514 135 T760 126 V220 H0Z" fill="#bdc0aa" opacity=".72"/>
+                            <path d="M0 149 Q92 142 170 150 T337 147 T510 151 T760 143" fill="none" stroke="#536879" stroke-width="2"/>
+                            <path d="M0 176 Q110 165 205 177 T405 174 T610 178 T760 169" fill="none" stroke="#627587" stroke-width="1.5" opacity=".68"/>
+                            <path d="M0 198 Q106 188 214 199 T420 196 T628 201 T760 191" fill="none" stroke="#627587" stroke-width="1.3" opacity=".55"/>
+                            <path d="M434 137 l32 -27 24 10 20 -29 25 6 26 -21 38 14 26 -22 39 15 31 -8 65 35 v39H434Z" fill="#9d9276" stroke="#615a4a" stroke-width="2"/>
+                            <path d="M495 121v-22l15 7v17m27-16V82l18 11v22m29-11V83l18 12v13m34-15V67l22 17v18m32-13V77l16 7v17" fill="#e1cfaa" stroke="#615a4a" stroke-width="1.5"/>
+                            <path d="M142 151 Q202 145 259 150 L294 143 277 166 171 168Z" fill="#343f49" stroke="#24303a" stroke-width="2"/>
+                            <path d="M173 147V65m46 82V48m43 101V70" stroke="#35414b" stroke-width="4"/>
+                            <path d="M174 70l-27 56h27Zm5 10 24 44h-24Zm40-24-31 63h31Zm5 8 28 54h-28Zm41 10-28 52h28Z" fill="#e8ddc4" stroke="#59616a" stroke-width="1.5"/>
+                            <path d="M206 145v-30h22v30m18-35h14v34m-67-40h12" fill="#745e45" stroke="#343f49" stroke-width="2"/>
+                            <path d="M165 172q37 5 75 0t78 1m-167 8q32 4 65 0t67 0" fill="none" stroke="#566a78" stroke-width="1.5"/>
+                            <path d="M78 220v-38l21-18 21 18v38m-40-26h37m-30 26v-18h14v18" fill="#806b50" stroke="#4b463d" stroke-width="2"/>
+                            <path d="M92 162l7-10 8 10" fill="#806b50" stroke="#4b463d" stroke-width="2"/>
+                            <circle cx="114" cy="175" r="8" fill="#d5b68d" stroke="#574b3a" stroke-width="1.5"/>
+                            <path d="M105 174l9-10 10 8-2 4m-10 8 12 3 6 17m-17-20-10 14-9 5m18-2 17 2 4 8" fill="none" stroke="#34404a" stroke-width="5" stroke-linecap="round"/>
+                            <path d="M121 190l18 11m-20-2 15 13" fill="none" stroke="#d2bd94" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M126 202l20 7-5 5-18-5Z" fill="#efe2c4" stroke="#67593f" stroke-width="1.5"/>
+                            <path d="M159 217h-84" stroke="#574b3a" stroke-width="3"/>
+                            <path d="M30 30h68M30 36h38m634 147h25" stroke="#735d3f" stroke-width="1" opacity=".5"/>
+                        </svg>
+                        <figcaption>Набросок на память: фрегат на рейде и дорога вдоль греческого берега.</figcaption>
+                    </figure>
+
+                    <div class="diary-body" id="diaryBody">
+                        <p>
+                            Вчера нашъ фрегатъ «Память Азова», на которомъ <button type="button" class="cipher-word" data-id="0">слѣдуетъ</button> на Востокъ самъ цесаревичъ Николай Александровичъ, бросилъ якорь на большомъ <button type="button" class="cipher-word" data-id="1">рейдѣ</button> Пирея. А нынче утромъ мы съ мичманомъ, матросомъ <button type="button" class="cipher-word" data-id="2">Ѳедоромъ</button> и боцманомъ-грекомъ на шлюпкѣ сошли на берегъ.
+                        </p>
+                        <p>
+                            У причала мы разговорились съ седымъ мѣстнымъ рыбакомъ, чинившимъ <button type="button" class="cipher-word" data-id="3">сѣти</button>. Благодаря боцману мы легко понимали другъ друга. Старикъ охотно вспомнилъ, какъ еще въ молодости видѣлъ въ <button type="button" class="cipher-word" data-id="4">здѣшнихъ</button> водахъ русскіе парусные корабли, и съ гордостью показалъ намъ старую портовую карту съ отмѣтками лоцмана.
+                        </p>
+                        <p>
+                            Потомъ мы прошли вдоль морского берега мимо <button type="button" class="cipher-word" data-id="5">великолѣпныхъ</button> каменныхъ особняковъ, выстроенныхъ архитекторомъ Циллеромъ. Боцманъ шепнулъ намъ, что въ самомъ первомъ изъ этихъ домовъ у воды останавливается сама греческая королевская семья — король Георгъ и королева Ольга, наша русская великая княгиня.
+                        </p>
+                        <p>
+                            На память о нашей <button type="button" class="cipher-word" data-id="7">встрѣчѣ</button> старый рыбакъ подарилъ мнѣ маленькую медную монетку и показалъ рукой на высокий холмъ, откуда, по его словамъ, виденъ весь портъ и далекая дорога на <button type="button" class="cipher-word" data-id="6">Аѳины</button>.
+                        </p>
+                    </div>
+                </article>
+
+                <!-- Баннер перехода к Шагу 3 (появляется после расшифровки 8 слов) -->
+                <div class="stage1-complete-banner" id="stage1CompleteBanner">
+                    <div class="stage1-complete-text">
+                        <h3>✨ Все 8 слов расшифрованы!</h3>
+                        <p>Теперь перечитай страницу целиком и проверь, насколько внимательно ты изучил дневник юнги.</p>
+                    </div>
+                    <button type="button" class="btn btn-gold" id="goToStage2Btn" style="font-size: 1.02rem; padding: 13px 20px;">
+                        📖 Перейти к вопросам на понимание текста →
+                    </button>
+                </div>
+            </section>
+
+            <!-- =====================================================
+                 ШАГ 3: ПРОВЕРКА ПОНИМАНИЯ ПРОЧИТАННОГО (4 ЗВЕЗДЫ)
+                 ===================================================== -->
+            <section class="stage2-section" id="stage2Section">
+                <div class="stage2-header-card">
+                    <div>
+                        <h2>🔍 Шаг 3: Следствие знатоков Пирея</h2>
+                        <p>Ответь на 4 вопроса по содержанию дневника, чтобы заработать последние 4 звезды и получить диплом.</p>
+                    </div>
+                    <button type="button" class="btn btn-gold" id="toggleRereadBtn">
+                        📜 Перечитать дневник
+                    </button>
+                </div>
+
+                <!-- Сворачиваемая копия расшифрованного дневника для опоры на текст -->
+                <div class="reread-drawer" id="rereadDrawer">
+                    <div class="notebook-sheet" id="rereadNotebook">
+                        <div class="notebook-header">
+                            <div class="diary-date">3 ноября 1890 года (Расшифровано)</div>
+                            <button type="button" class="btn btn-outline" id="toggleRereadFontBtn">
+                                🔤 Обычный шрифт
+                            </button>
+                        </div>
+                        <div class="diary-body" id="rereadDiaryBody">
+                            <!-- Заполняется чистым современным текстом автоматически -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Карточки 4 вопросов на понимание текста -->
+                <div class="comprehension-grid" id="comprehensionGrid">
+                    <!-- Генерируются через JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 1. Стартовое окно -->
+    <div class="modal-overlay open" id="startModal" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+        <div class="modal-box">
+            <div class="intro-badge">Исторический веб-квест • Пирей, 1890 год</div>
+            <div class="modal-header">
+                <h1 class="modal-title" id="startTitle">Дневник юнги: Тайна 3 ноября 1890 года</h1>
+            </div>
+            <p class="intro-text">
+                <strong>2 ноября 1890 года</strong> на большой рейд греческого порта Пирей прибыл русский броненосный фрегат <strong>«Память Азова»</strong> с цесаревичем Николаем на борту. Представь, что ты юнга этого корабля: следующая страница — художественная реконструкция личной записи о прогулке по Пирею.<br><br>
+                Тебя ждут <strong>три шага</strong> и <strong>12 золотых звёзд</strong>:<br>
+                1️⃣ Изучи «Ключ шифровальщика» — 4 старинные буквы.<br>
+                2️⃣ Расшифруй 8 рукописных слов на странице дневника.<br>
+                3️⃣ Ответь на 4 вопроса знатока истории Пирея!
+            </p>
+            <button type="button" class="btn btn-gold" id="startGameBtn" style="width: 100%; font-size: 1.1rem; padding: 14px;">
+                🔑 Перейти к изучению ключа
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Модальное окно-справочник «Ключ шифровальщика 1890 года» -->
+    <div class="modal-overlay" id="keyModal" role="dialog" aria-modal="true" aria-labelledby="keyTitle">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title" id="keyTitle">🔑 Ключ шифровальщика 1890 года</h2>
+                <button type="button" class="close-btn" id="closeKeyBtn" aria-label="Закрыть">×</button>
+            </div>
+            <p style="margin-bottom: 14px; font-size: 0.95rem; color: var(--ui-muted);">
+                До реформы 1918 года в русском алфавите были 4 особые буквы. Вот их печатный и письменный вид:
+            </p>
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <div class="rule-letter">Ѣ ѣ <span>Ять</span></div>
+                    <p class="rule-desc">Письменно: <strong style="font-family: 'Caveat', cursive; font-size: 1.45rem;">Ѣ ѣ</strong> • Читалась как звук <strong>[Е]</strong>.</p>
+                    <div class="rule-example">слѣдуетъ → следует, встрѣчѣ → встрече</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-letter">Ѳ ѳ <span>Фита</span></div>
+                    <p class="rule-desc">Письменно: <strong style="font-family: 'Caveat', cursive; font-size: 1.45rem;">Ѳ ѳ</strong> • Читалась как <strong>[Ф]</strong> в греческих словах.</p>
+                    <div class="rule-example">Ѳедоромъ → Федором, Аѳины → Афины</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-letter">І і <span>И десятеричное</span></div>
+                    <p class="rule-desc">Письменно: <strong style="font-family: 'Caveat', cursive; font-size: 1.45rem;">І і</strong> • Читалась как <strong>[И]</strong> перед гласными и в слове «міръ».</p>
+                    <div class="rule-example">исторій → историй, русскіе → русские</div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-letter">Ъ ъ <span>Ер</span></div>
+                    <p class="rule-desc">Письменно: <strong style="font-family: 'Caveat', cursive; font-size: 1.45rem;">Ъ ъ</strong> • Не читалась (ставилась после твёрдых согласных в конце).</p>
+                    <div class="rule-example">фрегатъ → фрегат, портъ → порт</div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-navy" id="closeKeyBottomBtn" style="width: 100%;">
+                Понятно, вернуться к игре
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Модальное окно вопроса по слову (Шаг 2) -->
+    <div class="modal-overlay" id="quizModal" role="dialog" aria-modal="true" aria-labelledby="quizTitle">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 class="modal-title" id="quizTitle">Расшифровка рукописного слова</h2>
+                <button type="button" class="close-btn" id="closeQuizBtn" aria-label="Закрыть">×</button>
+            </div>
+            <div class="word-showcase">
+                <div class="word-showcase-label">Запись в тетради 1890 года:</div>
+                <div class="word-showcase-value" id="quizOldWord">слѣдуетъ</div>
+            </div>
+            <div class="question-text" id="quizQuestion">Вопрос</div>
+            <div class="options-list" id="quizOptions"></div>
+            <div class="quiz-feedback" id="quizFeedback" role="status" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <!-- 3.5 Модальное окно тренировки буквы (Шаг 1) -->
+    <div class="modal-overlay" id="letterPracticeModal" role="dialog" aria-modal="true" aria-labelledby="letterPracticeTitle">
+        <div class="modal-box" style="max-width: 640px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="letterPracticeTitle">Тренировка буквы</h2>
+                <button type="button" class="close-btn" id="closeLetterPracticeBtn" aria-label="Закрыть">×</button>
+            </div>
+            <p id="letterPracticeRule" style="margin-bottom: 12px; font-size: 0.96rem; color: var(--ui-text); font-weight: 700;"></p>
+            <div class="letter-sample-box">
+                <div class="letter-sample-title">📌 Образцы для запоминания:</div>
+                <div class="sample-examples-row" id="letterPracticeSamples"></div>
+            </div>
+            <div style="font-size: 0.96rem; font-weight: 800; color: var(--navy); margin-bottom: 10px;">
+                ✍️ Потренируйся! Выбери современный перевод для каждого слова (<span id="drillProgressBadge">0 / 5</span>):
+            </div>
+            <div class="drill-list" id="letterDrillList"></div>
+            <div class="quiz-feedback" id="letterPracticeFeedback" role="status" aria-live="polite"></div>
+            <button type="button" class="btn btn-gold" id="confirmLetterMasteredBtn" style="width: 100%; margin-top: 12px;" disabled>
+                ✓ Завершить тренировку буквы
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. Финальный Диплом Победы -->
+    <div class="modal-overlay" id="victoryModal" role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+        <div class="modal-box diploma-box">
+            <div class="diploma-ribbon">Диплом за отличное знание истории</div>
+            <h2 class="diploma-rank" id="victoryTitle">Юный историк-шифровальщик Пирея</h2>
+            <div class="victory-stars" id="victoryStarsRow"></div>
+            <p style="font-size: 1.08rem; font-weight: 800; color: var(--navy);">
+                Итоговый счёт: 12 из 12 золотых звёзд ⭐
+            </p>
+            <div class="history-fact">
+                <div class="history-fact-title">🏛️ Реальная история за страницами дневника:</div>
+                <p>
+                    <strong>2 ноября 1890 года</strong> (по старому стилю) броненосный фрегат <strong>«Память Азова»</strong> действительно бросил якорь на рейде Пирея — цесаревич Николай Александрович прибыл в Грецию навестить свою тётю, греческую королеву <strong>Ольгу Константиновну</strong>.<br><br>
+                    А знаменитые каменные особняки на побережье Пирея (у нынешней площади Александры) построил в 1877 году архитектор <strong>Эрнст Циллер</strong>. В самом первом из них у воды действительно располагалась летняя резиденция короля Георга I и королевы Ольги!
+                </p>
+            </div>
+            <button type="button" class="btn btn-gold" id="restartGameBtn" style="width: 100%; font-size: 1.06rem;">
+                🔄 Пройти квест ещё раз
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // ДАННЫЕ ШАГА 1: Тренажёр для 4 старинных букв (образцы + 5 слов)
+        // =========================================================================
+        const LETTER_DRILLS = [
+            {
+                id: 0,
+                title: "Буква «Ять» (Ѣ ѣ)",
+                rule: "Читалась как звук [Е]. Обрати внимание, как «ѣ» выглядит в печатном и рукописном виде:",
+                samples: [
+                    { style: "Печатный образец", oldWord: "вѣтеръ", modern: "ветер", handwritten: false },
+                    { style: "Рукописный образец", oldWord: "рѣка", modern: "река", handwritten: true }
+                ],
+                drills: [
+                    { word: "мѣсто", handwritten: false, options: ["место", "мисто", "мосто"], answer: "место" },
+                    { word: "хлѣбъ", handwritten: false, options: ["хлеб", "хлиб", "хлебъ"], answer: "хлеб" },
+                    { word: "бѣлый", handwritten: true, options: ["белый", "билый", "былый"], answer: "белый" },
+                    { word: "лѣто", handwritten: true, options: ["лето", "лито", "люто"], answer: "лето" },
+                    { word: "звѣзда", handwritten: true, options: ["звезда", "звизда", "звязда"], answer: "звезда" }
+                ]
+            },
+            {
+                id: 1,
+                title: "Буква «Фита» (Ѳ ѳ)",
+                rule: "Писалась в словах греческого происхождения и читалась как звук [Ф]:",
+                samples: [
+                    { style: "Печатный образец", oldWord: "Ѳеодосія", modern: "Феодосия", handwritten: false },
+                    { style: "Рукописный образец", oldWord: "миѳъ", modern: "миф", handwritten: true }
+                ],
+                drills: [
+                    { word: "каѳедра", handwritten: false, options: ["кафедра", "катедра", "каоедра"], answer: "кафедра" },
+                    { word: "орѳографія", handwritten: false, options: ["орфография", "ортография", "ороография"], answer: "орфография" },
+                    { word: "Ѳома", handwritten: true, options: ["Фома", "Тома", "Оома"], answer: "Фома" },
+                    { word: "ариѳметика", handwritten: true, options: ["арифметика", "аритметика", "ариометика"], answer: "арифметика" },
+                    { word: "мараѳонъ", handwritten: true, options: ["марафон", "маратон", "мараоон"], answer: "марафон" }
+                ]
+            },
+            {
+                id: 2,
+                title: "Буква «И десятеричное» (І і)",
+                rule: "Писалась перед другими гласными и в слове «міръ» (вселенная). Читалась как обычный звук [И]:",
+                samples: [
+                    { style: "Печатный образец", oldWord: "линія", modern: "линия", handwritten: false },
+                    { style: "Рукописный образец", oldWord: "синій", modern: "синий", handwritten: true }
+                ],
+                drills: [
+                    { word: "Греція", handwritten: false, options: ["Греция", "Грецыя", "Грецея"], answer: "Греция" },
+                    { word: "станція", handwritten: false, options: ["станция", "станцыя", "станцея"], answer: "станция" },
+                    { word: "геройскій", handwritten: true, options: ["геройский", "геройскый", "геройскей"], answer: "геройский" },
+                    { word: "морскія", handwritten: true, options: ["морские", "морскые", "морскяе"], answer: "морские" },
+                    { word: "исторія", handwritten: true, options: ["история", "исторыя", "исторея"], answer: "история" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Буква «Ер» — твёрдый знак (Ъ ъ)",
+                rule: "Ставилась в конце слов после твёрдых согласных и никак не произносилась — при переводе её просто убираем:",
+                samples: [
+                    { style: "Печатный образец", oldWord: "матросъ", modern: "матрос", handwritten: false },
+                    { style: "Рукописный образец", oldWord: "берегъ", modern: "берег", handwritten: true }
+                ],
+                drills: [
+                    { word: "закатъ", handwritten: false, options: ["закат", "закатъ", "закаты"], answer: "закат" },
+                    { word: "островъ", handwritten: false, options: ["остров", "островъ", "острова"], answer: "остров" },
+                    { word: "домъ", handwritten: true, options: ["дом", "домъ", "дома"], answer: "дом" },
+                    { word: "холмъ", handwritten: true, options: ["холм", "холмъ", "холмы"], answer: "холм" },
+                    { word: "городъ", handwritten: true, options: ["город", "городъ", "города"], answer: "город" }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // ДАННЫЕ ШАГА 2: 8 зашифрованных слов из дневника
+        // =========================================================================
+        const CIPHER_WORDS = [
+            {
+                id: 0,
+                oldWord: "слѣдуетъ",
+                modernWord: "следует",
+                question: "Как правильно записать слово «слѣдуетъ» по современным правилам?",
+                hint: "Буква «ѣ» (ять) читается как «е», а «ъ» (ер) на конце слова после согласной убирается.",
+                options: [
+                    { text: "следует", correct: true },
+                    { text: "слидует", correct: false },
+                    { text: "следуетъ", correct: false }
+                ]
+            },
+            {
+                id: 1,
+                oldWord: "рейдѣ",
+                modernWord: "рейде",
+                question: "Какая современная буква заменила «ѣ» (ять) в окончании слова «рейдѣ»?",
+                hint: "Посмотри в «Ключ шифровальщика»: «ѣ» всегда звучала как [Е].",
+                options: [
+                    { text: "рейде", correct: true },
+                    { text: "рейди", correct: false },
+                    { text: "рейды", correct: false }
+                ]
+            },
+            {
+                id: 2,
+                oldWord: "Ѳедоромъ",
+                modernWord: "Федором",
+                question: "Как сегодня пишется имя матроса «Ѳедоромъ»?",
+                hint: "Греческая буква «Ѳ» (фита) читалась как звук [Ф], а «ъ» на конце слова не нужен.",
+                options: [
+                    { text: "Федором", correct: true },
+                    { text: "Теодором", correct: false },
+                    { text: "Оедором", correct: false }
+                ]
+            },
+            {
+                id: 3,
+                oldWord: "сѣти",
+                modernWord: "сети",
+                question: "Какое слово скрывается за старой записью «сѣти»?",
+                hint: "Замени букву «ѣ» (ять) на современную букву «е».",
+                options: [
+                    { text: "сети", correct: true },
+                    { text: "сити", correct: false },
+                    { text: "соты", correct: false }
+                ]
+            },
+            {
+                id: 4,
+                oldWord: "здѣшнихъ",
+                modernWord: "здешних",
+                question: "Выбери верный современный перевод слова «здѣшнихъ»:",
+                hint: "Убери «ъ» в конце и замени «ѣ» на «е».",
+                options: [
+                    { text: "здешних", correct: true },
+                    { text: "здишних", correct: false },
+                    { text: "здешнихъ", correct: false }
+                ]
+            },
+            {
+                id: 5,
+                oldWord: "великолѣпныхъ",
+                modernWord: "великолепных",
+                question: "Как пишется слово «великолѣпныхъ» в современном русском языке?",
+                hint: "В корнях многих слов (например, «лѣп-») раньше писалась «ять», а теперь пишется «е».",
+                options: [
+                    { text: "великолепных", correct: true },
+                    { text: "великолипных", correct: false },
+                    { text: "великолепныхъ", correct: false }
+                ]
+            },
+            {
+                id: 6,
+                oldWord: "Аѳины",
+                modernWord: "Афины",
+                question: "Какой город назван в дневнике словом «Аѳины»?",
+                hint: "В словах греческого происхождения раньше писалась «Ѳ» (фита), которая звучала как [Ф].",
+                options: [
+                    { text: "Афины", correct: true },
+                    { text: "Атины", correct: false },
+                    { text: "Аоины", correct: false }
+                ]
+            },
+            {
+                id: 7,
+                oldWord: "встрѣчѣ",
+                modernWord: "встрече",
+                question: "В слове «встрѣчѣ» целых две буквы «ять». Как оно пишется сегодня?",
+                hint: "Обе буквы «ѣ» заменяются на современную букву «е».",
+                options: [
+                    { text: "встрече", correct: true },
+                    { text: "встриче", correct: false },
+                    { text: "встречи", correct: false }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // ДАННЫЕ ШАГА 3: 4 вопроса на понимание прочитанного текста
+        // =========================================================================
+        const COMPREHENSION_QUESTIONS = [
+            {
+                id: 0,
+                question: "Где именно встал на якорь фрегат «Память Азова» и кого он сопровождал в этом плавании?",
+                hint: "Перечитай первый абзац дневника: где бросил якорь корабль и кто следовал на нём на Восток?",
+                options: [
+                    {
+                        text: "На большом рейде Пирея; корабль вёз на Восток цесаревича Николая Александровича",
+                        correct: true,
+                        explanation: "Верно! Крупный фрегат стоял на большом рейде главного порта, а на берег моряки сошли на шлюпке."
+                    },
+                    {
+                        text: "В маленькой яхтенной бухте Зея; на борту находился только капитан",
+                        correct: false
+                    },
+                    {
+                        text: "У причала в Афинах; корабль перевозил торговый груз",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                id: 1,
+                question: "Как моряки смогли свободно беседовать со старым греческим рыбаком?",
+                hint: "Посмотри, кто вместе с мичманом и матросом Фёдором сошёл в шлюпке на берег.",
+                options: [
+                    {
+                        text: "Им помогал боцман-грек, говоривший по-гречески",
+                        correct: true,
+                        explanation: "Точно! Боцман-грек выступил переводчиком между русскими моряками и пирейским рыбаком."
+                    },
+                    {
+                        text: "Рыбак много лет жил в Петербурге и отлично знал русский язык",
+                        correct: false
+                    },
+                    {
+                        text: "Они общались только рисунками на песке",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                id: 2,
+                question: "Чьи великолепные каменные особняки увидели моряки у берега и кто останавливался в первом из них?",
+                hint: "Вспомни фамилию архитектора и имена королевской четы из третьего абзаца.",
+                options: [
+                    {
+                        text: "Особняки архитектора Циллера; в первом доме останавливались король Георг и королева Ольга",
+                        correct: true,
+                        explanation: "Верно! В первом из особняков Эрнста Циллера у воды располагалась летняя резиденция греческой королевской семьи."
+                    },
+                    {
+                        text: "Дворцы древних царей; в них размещался морской музей",
+                        correct: false
+                    },
+                    {
+                        text: "Казармы архитектора Росси; там жили русские матросы",
+                        correct: false
+                    }
+                ]
+            },
+            {
+                id: 3,
+                question: "Что подарил старый рыбак юнге на память и куда он указал рукой в конце встречи?",
+                hint: "Загляни в последний абзац дневника: какой предмет получил юнга и что видно с высокого холма?",
+                options: [
+                    {
+                        text: "Маленькую медную монетку и указал на высокий холм, откуда виден порт и дорога на Афины",
+                        correct: true,
+                        explanation: "Отлично! Ты внимательно прочитал весь дневник и открыл все его исторические детали."
+                    },
+                    {
+                        text: "Старую подзорную трубу и указал на маяк у входа в гавань",
+                        correct: false
+                    },
+                    {
+                        text: "Компас лоцмана и указал на шлюпку, отходящую к фрегату",
+                        correct: false
+                    }
+                ]
+            }
+        ];
+
+        // Состояние игры и вспомогательные функции шкалы звёзд и интерфейса
+        const TOTAL_STARS = 12;
+        const STAR_SVG = `<svg class="star-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+
+        const gameState = {
+            currentStage: 1,
+            studiedLetters: new Set(),
+            solvedWords: new Set(),
+            solvedCompQuestions: new Set(),
+            isPrintFont: false
+        };
+
+        function initStars() {
+            const container = document.getElementById("starsContainer");
+            const victoryRow = document.getElementById("victoryStarsRow");
+            if (!container || !victoryRow) return;
+
+            container.innerHTML = "";
+            victoryRow.innerHTML = "";
+
+            for (let i = 0; i < TOTAL_STARS; i++) {
+                if (i === 8) {
+                    const divider = document.createElement("span");
+                    divider.className = "star-divider";
+                    divider.title = "8 звёзд за расшифровку + 4 звезды за понимание текста";
+                    container.appendChild(divider);
+                }
+                const wrapper = document.createElement("span");
+                wrapper.innerHTML = STAR_SVG;
+                const svg = wrapper.firstElementChild;
+                svg.dataset.starIndex = i;
+                container.appendChild(svg);
+
+                const vWrapper = document.createElement("span");
+                vWrapper.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+                victoryRow.appendChild(vWrapper.firstElementChild);
+            }
+        }
+
+        function updateStarsDisplay() {
+            const totalEarned = gameState.solvedWords.size + gameState.solvedCompQuestions.size;
+            const stars = document.querySelectorAll("#starsContainer .star-icon");
+
+            stars.forEach((star, idx) => {
+                const shouldBeActive = idx < totalEarned;
+                const wasActive = star.classList.contains("active");
+                if (shouldBeActive && !wasActive) {
+                    star.classList.add("active", "pop-anim");
+                } else if (!shouldBeActive) {
+                    star.classList.remove("active", "pop-anim");
+                }
+            });
+
+            document.getElementById("starCountText").textContent = `${totalEarned} из ${TOTAL_STARS}`;
+            document.getElementById("wordsCounter").textContent = `Слова: ${gameState.solvedWords.size} / ${CIPHER_WORDS.length}`;
+        }
+
+        function shuffleArray(array) {
+            const copy = [...array];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function toggleDiaryFont() {
+            gameState.isPrintFont = !gameState.isPrintFont;
+            const sheets = [document.getElementById("mainNotebook"), document.getElementById("rereadNotebook")];
+            const buttons = [document.getElementById("toggleFontBtn"), document.getElementById("toggleRereadFontBtn")];
+
+            sheets.forEach(sheet => {
+                if (sheet) sheet.classList.toggle("print-mode", gameState.isPrintFont);
+            });
+
+            buttons.forEach(btn => {
+                if (btn) {
+                    btn.textContent = gameState.isPrintFont ? "✒️ Вернуть почерк" : "🔤 Обычный шрифт";
+                }
+            });
+        }
+
+        // =========================================================================
+        // ЛОГИКА ШАГА 1 (ОБЯЗАТЕЛЬНАЯ ТРЕНИРОВКА 4 БУКВ ПО ОБРАЗЦУ)
+        // =========================================================================
+        let activePracticeLetterId = null;
+        let solvedDrillsInModal = new Set();
+
+        function handleStudyCardClick(cardEl) {
+            const letterId = parseInt(cardEl.getAttribute("data-letter-id"), 10);
+            openLetterPractice(letterId);
+        }
+
+        function openLetterPractice(letterId) {
+            const data = LETTER_DRILLS.find(item => item.id === letterId);
+            if (!data) return;
+
+            activePracticeLetterId = letterId;
+            solvedDrillsInModal.clear();
+
+            document.getElementById("letterPracticeTitle").textContent = `Тренировка: ${data.title}`;
+            document.getElementById("letterPracticeRule").textContent = data.rule;
+
+            // Рендер 2 образцов (печатного и рукописного)
+            const samplesRow = document.getElementById("letterPracticeSamples");
+            samplesRow.innerHTML = "";
+            data.samples.forEach(s => {
+                const pill = document.createElement("div");
+                pill.className = "sample-pill";
+                const wordSpanClass = s.handwritten ? "handwritten-word" : "";
+                pill.innerHTML = `
+                    <span class="sample-pill-type">${s.style}</span>
+                    <span class="sample-pill-pair">
+                        <span class="${wordSpanClass}">${s.oldWord}</span> → <span class="modern-target">${s.modern}</span>
+                    </span>
+                `;
+                samplesRow.appendChild(pill);
+            });
+
+            // Рендер 5 слов для тренировки (2 печатных + 3 рукописных)
+            const drillList = document.getElementById("letterDrillList");
+            drillList.innerHTML = "";
+            const totalDrills = data.drills.length;
+            document.getElementById("drillProgressBadge").textContent = `0 / ${totalDrills}`;
+
+            const feedbackEl = document.getElementById("letterPracticeFeedback");
+            feedbackEl.className = "quiz-feedback";
+            feedbackEl.textContent = "";
+
+            const confirmBtn = document.getElementById("confirmLetterMasteredBtn");
+            confirmBtn.disabled = true;
+
+            data.drills.forEach((drill, idx) => {
+                const item = document.createElement("div");
+                item.className = "drill-item";
+
+                const wordWrap = document.createElement("div");
+                wordWrap.className = "drill-word-wrap";
+
+                const tag = document.createElement("span");
+                tag.className = "drill-style-tag";
+                tag.textContent = drill.handwritten ? "рукоп." : "печатн.";
+
+                const wordSpan = document.createElement("span");
+                wordSpan.className = drill.handwritten ? "drill-word-hand" : "drill-word-print";
+                wordSpan.textContent = drill.word;
+
+                wordWrap.appendChild(tag);
+                wordWrap.appendChild(wordSpan);
+
+                const choicesWrap = document.createElement("div");
+                choicesWrap.className = "drill-choices";
+
+                shuffleArray(drill.options).forEach(optText => {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "drill-choice-btn";
+                    btn.textContent = optText;
+                    btn.addEventListener("click", () => {
+                        if (solvedDrillsInModal.has(idx)) return;
+                        if (optText === drill.answer) {
+                            btn.classList.add("correct");
+                            item.classList.add("solved");
+                            choicesWrap.querySelectorAll("button").forEach(b => b.disabled = true);
+                            solvedDrillsInModal.add(idx);
+
+                            document.getElementById("drillProgressBadge").textContent = `${solvedDrillsInModal.size} / ${totalDrills}`;
+                            feedbackEl.className = "quiz-feedback";
+                            feedbackEl.textContent = "";
+
+                            if (solvedDrillsInModal.size === totalDrills) {
+                                feedbackEl.className = "quiz-feedback success";
+                                feedbackEl.textContent = `Отлично! Все ${totalDrills} слов переведены верно. Нажми кнопку ниже, чтобы засчитать букву.`;
+                                confirmBtn.disabled = false;
+                            }
+                        } else {
+                            btn.classList.add("wrong");
+                            btn.disabled = true;
+                            feedbackEl.className = "quiz-feedback error";
+                            feedbackEl.textContent = `Не совсем так! Посмотри на образцы вверху и попробуй другой вариант для слова «${drill.word}».`;
+                        }
+                    });
+                    choicesWrap.appendChild(btn);
+                });
+
+                item.appendChild(wordWrap);
+                item.appendChild(choicesWrap);
+                drillList.appendChild(item);
+            });
+
+            document.getElementById("letterPracticeModal").classList.add("open");
+        }
+
+        function completeActiveLetterMastery() {
+            if (activePracticeLetterId === null) return;
+
+            gameState.studiedLetters.add(activePracticeLetterId);
+            const cardEl = document.querySelector(`.key-study-card[data-letter-id="${activePracticeLetterId}"]`);
+            if (cardEl) {
+                cardEl.classList.add("studied");
+                const statusBadge = cardEl.querySelector(".key-card-status");
+                if (statusBadge) {
+                    statusBadge.textContent = "✓ Изучено";
+                }
+            }
+
+            const count = gameState.studiedLetters.size;
+            document.getElementById("studiedLettersText").textContent = `Изучено карточек: ${count} из 4`;
+
+            if (count === 4) {
+                document.getElementById("goToDiaryStepBtn").disabled = false;
+            }
+
+            document.getElementById("letterPracticeModal").classList.remove("open");
+            activePracticeLetterId = null;
+        }
+
+        function transitionToDiaryStep() {
+            gameState.currentStage = 2;
+            document.getElementById("stageBadge").textContent = "Шаг 2: Расшифровка";
+            document.getElementById("step1KeySection").style.display = "none";
+            document.getElementById("stage1Section").style.display = "block";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        // =========================================================================
+        // ЛОГИКА ШАГА 2 (РАСШИФРОВКА СЛОВ)
+        // =========================================================================
+        function openWordQuiz(wordId) {
+            if (gameState.solvedWords.has(wordId)) return;
+
+            const wordData = CIPHER_WORDS.find(item => item.id === wordId);
+            if (!wordData) return;
+
+            document.getElementById("quizOldWord").textContent = wordData.oldWord;
+            document.getElementById("quizQuestion").textContent = wordData.question;
+
+            const feedbackEl = document.getElementById("quizFeedback");
+            feedbackEl.className = "quiz-feedback";
+            feedbackEl.textContent = "";
+
+            const optionsContainer = document.getElementById("quizOptions");
+            optionsContainer.innerHTML = "";
+
+            shuffleArray(wordData.options).forEach(opt => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "option-btn";
+                btn.textContent = opt.text;
+                btn.addEventListener("click", () => handleWordOption(btn, opt.correct, wordData));
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById("quizModal").classList.add("open");
+        }
+
+        function handleWordOption(buttonEl, isCorrect, wordData) {
+            const feedbackEl = document.getElementById("quizFeedback");
+
+            if (isCorrect) {
+                buttonEl.classList.add("correct-choice");
+                feedbackEl.className = "quiz-feedback success";
+                feedbackEl.textContent = `Верно! «${wordData.oldWord}» → «${wordData.modernWord}». +1 золотая звезда!`;
+
+                document.querySelectorAll("#quizOptions .option-btn").forEach(b => b.disabled = true);
+
+                gameState.solvedWords.add(wordData.id);
+                updateStarsDisplay();
+
+                const wordSlot = document.querySelector(`.cipher-word[data-id="${wordData.id}"]`);
+                if (wordSlot) {
+                    wordSlot.textContent = wordData.modernWord;
+                    wordSlot.classList.add("solved");
+                }
+
+                setTimeout(() => {
+                    document.getElementById("quizModal").classList.remove("open");
+                    if (gameState.solvedWords.size === CIPHER_WORDS.length) {
+                        const banner = document.getElementById("stage1CompleteBanner");
+                        banner.classList.add("visible");
+                        banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    }
+                }, 1000);
+            } else {
+                buttonEl.classList.add("wrong-choice");
+                buttonEl.disabled = true;
+                feedbackEl.className = "quiz-feedback error";
+                feedbackEl.textContent = `Не совсем так. Подсказка: ${wordData.hint}`;
+            }
+        }
+
+        // =========================================================================
+        // ЛОГИКА ШАГА 3 (ПРОВЕРКА ПОНИМАНИЯ ТЕКСТА)
+        // =========================================================================
+        function transitionToStage2() {
+            gameState.currentStage = 3;
+            document.getElementById("stageBadge").textContent = "Шаг 3: Проверка понимания";
+
+            // Копируем расшифрованный текст дневника в выдвижную панель для опоры при ответах
+            const cleanDiaryHTML = document.getElementById("diaryBody").innerHTML;
+            document.getElementById("rereadDiaryBody").innerHTML = cleanDiaryHTML;
+
+            document.getElementById("stage1Section").style.display = "none";
+            document.getElementById("stage2Section").classList.add("active");
+
+            renderComprehensionQuestions();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function renderComprehensionQuestions() {
+            const grid = document.getElementById("comprehensionGrid");
+            grid.innerHTML = "";
+
+            COMPREHENSION_QUESTIONS.forEach((qItem) => {
+                const card = document.createElement("div");
+                card.className = "comp-card";
+                card.id = `compCard_${qItem.id}`;
+
+                const header = document.createElement("div");
+                header.className = "comp-q-header";
+                header.innerHTML = `<span class="comp-q-num" id="compBadge_${qItem.id}">Вопрос ${qItem.id + 1} из 4</span>`;
+
+                const title = document.createElement("div");
+                title.className = "comp-q-title";
+                title.textContent = qItem.question;
+
+                const optionsDiv = document.createElement("div");
+                optionsDiv.className = "comp-options";
+
+                const feedbackDiv = document.createElement("div");
+                feedbackDiv.className = "comp-feedback";
+                feedbackDiv.id = `compFeedback_${qItem.id}`;
+                feedbackDiv.setAttribute("role", "status");
+                feedbackDiv.setAttribute("aria-live", "polite");
+
+                shuffleArray(qItem.options).forEach(opt => {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "comp-opt-btn";
+                    btn.textContent = opt.text;
+                    btn.addEventListener("click", () => handleCompAnswer(qItem, btn, opt, optionsDiv, feedbackDiv, card));
+                    optionsDiv.appendChild(btn);
+                });
+
+                card.appendChild(header);
+                card.appendChild(title);
+                card.appendChild(optionsDiv);
+                card.appendChild(feedbackDiv);
+                grid.appendChild(card);
+            });
+        }
+
+        function handleCompAnswer(qItem, clickedBtn, optionObj, optionsContainer, feedbackEl, cardEl) {
+            if (gameState.solvedCompQuestions.has(qItem.id)) return;
+
+            if (optionObj.correct) {
+                clickedBtn.classList.add("correct");
+                cardEl.classList.add("solved");
+                document.getElementById(`compBadge_${qItem.id}`).textContent = "✓ Выполнено (+1 звезда)";
+
+                optionsContainer.querySelectorAll(".comp-opt-btn").forEach(b => b.disabled = true);
+
+                feedbackEl.className = "comp-feedback success";
+                feedbackEl.textContent = optionObj.explanation;
+
+                gameState.solvedCompQuestions.add(qItem.id);
+                updateStarsDisplay();
+
+                if (gameState.solvedCompQuestions.size === COMPREHENSION_QUESTIONS.length) {
+                    setTimeout(() => {
+                        document.getElementById("victoryModal").classList.add("open");
+                        launchConfetti();
+                    }, 850);
+                }
+            } else {
+                clickedBtn.classList.add("wrong");
+                clickedBtn.disabled = true;
+                feedbackEl.className = "comp-feedback error";
+                feedbackEl.textContent = `Подумай ещё! Подсказка: ${optionObj.hint || qItem.hint}`;
+            }
+        }
+
+        // Полный сброс игры для повторного прохождения
+        function resetGame() {
+            gameState.studiedLetters.clear();
+            gameState.solvedWords.clear();
+            gameState.solvedCompQuestions.clear();
+            gameState.currentStage = 1;
+
+            document.getElementById("stageBadge").textContent = "Шаг 1: Изучение ключа";
+
+            document.querySelectorAll(".key-study-card").forEach(card => {
+                card.classList.remove("studied");
+                const badge = card.querySelector(".key-card-status");
+                if (badge) badge.textContent = "Тренироваться →";
+            });
+            document.getElementById("studiedLettersText").textContent = "Изучено карточек: 0 из 4";
+            document.getElementById("goToDiaryStepBtn").disabled = true;
+
+            CIPHER_WORDS.forEach(wordData => {
+                const slot = document.querySelector(`.cipher-word[data-id="${wordData.id}"]`);
+                if (slot) {
+                    slot.textContent = wordData.oldWord;
+                    slot.classList.remove("solved");
+                }
+            });
+
+            document.getElementById("stage1CompleteBanner").classList.remove("visible");
+            document.getElementById("rereadDrawer").classList.remove("open");
+            document.getElementById("stage2Section").classList.remove("active");
+            document.getElementById("stage1Section").style.display = "none";
+            document.getElementById("step1KeySection").style.display = "block";
+            document.getElementById("victoryModal").classList.remove("open");
+            gameState.isPrintFont = false;
+            document.querySelectorAll(".notebook-sheet").forEach(sheet => sheet.classList.remove("print-mode"));
+            document.getElementById("toggleFontBtn").textContent = "🔤 Обычный шрифт";
+            document.getElementById("toggleRereadFontBtn").textContent = "🔤 Обычный шрифт";
+            document.getElementById("toggleRereadBtn").textContent = "📜 Перечитать дневник";
+
+            updateStarsDisplay();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        // Праздничное конфетти при победе
+        function launchConfetti() {
+            const canvas = document.getElementById("confettiCanvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const colors = ["#F4B400", "#1B365D", "#2E7D32", "#E53E3E", "#3182CE"];
+            const pieces = [];
+
+            for (let i = 0; i < 120; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 10 + 6,
+                    h: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedY: Math.random() * 3.5 + 2,
+                    speedX: (Math.random() - 0.5) * 2.5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 8
+                });
+            }
+
+            let frameCount = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotationSpeed;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+
+                frameCount++;
+                if (frameCount < 190) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+
+        // Привязка обработчиков событий
+        document.addEventListener("DOMContentLoaded", () => {
+            initStars();
+            updateStarsDisplay();
+
+            // Стартовое окно
+            document.getElementById("startGameBtn").addEventListener("click", () => {
+                document.getElementById("startModal").classList.remove("open");
+            });
+
+            // Шаг 1: Карточки изучения ключа и переход к дневнику
+            document.querySelectorAll(".key-study-card").forEach(card => {
+                card.addEventListener("click", () => handleStudyCardClick(card));
+                card.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleStudyCardClick(card);
+                    }
+                });
+            });
+            document.getElementById("goToDiaryStepBtn").addEventListener("click", transitionToDiaryStep);
+
+            // Модальное окно тренировки буквы в Шаге 1
+            const letterPracticeModal = document.getElementById("letterPracticeModal");
+            document.getElementById("closeLetterPracticeBtn").addEventListener("click", () => {
+                letterPracticeModal.classList.remove("open");
+            });
+            document.getElementById("confirmLetterMasteredBtn").addEventListener("click", completeActiveLetterMastery);
+
+            // Кнопки-справочники «Ключ шифровальщика»
+            const keyModal = document.getElementById("keyModal");
+            document.getElementById("openKeyBtn").addEventListener("click", () => keyModal.classList.add("open"));
+            document.getElementById("closeKeyBtn").addEventListener("click", () => keyModal.classList.remove("open"));
+            document.getElementById("closeKeyBottomBtn").addEventListener("click", () => keyModal.classList.remove("open"));
+
+            // Переключатели рукописного / печатного шрифта
+            document.getElementById("toggleFontBtn").addEventListener("click", toggleDiaryFont);
+            document.getElementById("toggleRereadFontBtn").addEventListener("click", toggleDiaryFont);
+
+            // Закрытие окна вопроса Шага 2
+            document.getElementById("closeQuizBtn").addEventListener("click", () => {
+                document.getElementById("quizModal").classList.remove("open");
+            });
+
+            // Клики по 8 рукописным словам в дневнике
+            document.querySelectorAll(".cipher-word").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const id = parseInt(btn.getAttribute("data-id"), 10);
+                    openWordQuiz(id);
+                });
+            });
+
+            // Переход к Шагу 3 (Проверка понимания)
+            document.getElementById("goToStage2Btn").addEventListener("click", transitionToStage2);
+
+            // Кнопка «Перечитать дневник» на 2-м этапе
+            document.getElementById("toggleRereadBtn").addEventListener("click", () => {
+                const drawer = document.getElementById("rereadDrawer");
+                const isOpen = drawer.classList.toggle("open");
+                document.getElementById("toggleRereadBtn").textContent = isOpen
+                    ? "🔼 Скрыть дневник"
+                    : "📜 Перечитать дневник";
+            });
+
+            // Кнопка повторного прохождения
+            document.getElementById("restartGameBtn").addEventListener("click", resetGame);
+
+            document.addEventListener("keydown", (e) => {
+                if (e.key !== "Escape") return;
+                const dismissibleModal = [
+                    keyModal,
+                    document.getElementById("quizModal"),
+                    letterPracticeModal
+                ].find(modal => modal.classList.contains("open"));
+                if (dismissibleModal) dismissibleModal.classList.remove("open");
+            });
+
+            // Закрытие вспомогательных модальных окон по клику на фон
+            [keyModal, document.getElementById("quizModal"), letterPracticeModal].forEach(modal => {
+                modal.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove("open");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
